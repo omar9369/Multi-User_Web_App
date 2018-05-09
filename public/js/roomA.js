@@ -13,7 +13,9 @@ class roomA extends Phaser.Scene {
 			frameWidth: 64,
 			frameHeight: 64
 		});
-  	this.load.image('star', 'assets/star_gold.png');
+  	this.load.image('redGem', 'assets/gem_red.png');
+		this.load.image('purpleGem', 'assets/gem_purple.png');
+		this.load.image('box', 'assets/10.png');
 	}//PRELOAD
 
   	create() {
@@ -74,20 +76,57 @@ class roomA extends Phaser.Scene {
 
   		this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
   		this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
-  
+
   		this.socket.on('scoreUpdate', function (scores) {
     		self.blueScoreText.setText('Blue: ' + scores.blue);
     		self.redScoreText.setText('Red: ' + scores.red);
   		});
 
-  		this.socket.on('starLocation', function (starLocation) {
-    		if (self.star) self.star.destroy();
-    		self.star = self.physics.add.image(starLocation.x, starLocation.y, 'star');
-   		 	self.physics.add.overlap(self.player, self.star, function () {
-      			this.socket.emit('starCollected');
+			this.socket.on('boxLocations', function (boxArray) {
+				//console.log('box locations received: ' + boxArray.length);
+				var boxes = self.physics.add.staticGroup();
+				for(var i = 0; i < boxArray.length; i++) {
+					boxes.create(boxArray[i].x, boxArray[i].y, 'box');
+				}
+				self.physics.add.collider(self.player, boxes);
+			});
+
+			this.socket.on('gemLocations', function (gemArray) {
+				var gemType;
+				//console.log('gem locations received: ' + gemArray.length);
+				self.gems = [gemArray.length];
+				for(var i = 0; i < gemArray.length; i++) {
+					if(gemArray[i].points == 5) {
+						gemType = 'redGem';
+					} else {
+						gemType = 'purpleGem'
+					}
+					self.gems[i] = self.physics.add.image(gemArray[i].x, gemArray[i].y, gemType);
+					(function(id) {
+						self.physics.add.overlap(self.player, self.gems[id], function() {
+							this.socket.emit('gemCollected', id);
+						}, null, self);
+					})(i);
+				}
+			});
+
+			this.socket.on('destroyGem', function(gemId) {
+				if(self.gems[gemId]) self.gems[gemId].destroy();
+			});
+
+  		this.socket.on('gemLocation', function (gemInfo, id) {
+				var gemType;
+				if(gemInfo.points == 5) {
+					gemType = 'redGem';
+				} else {
+					gemType = 'purpleGem';
+				}
+    		self.gems[id] = self.physics.add.image(gemInfo.x, gemInfo.y, gemType);
+   		 	self.physics.add.overlap(self.player, self.gems[id], function () {
+      			this.socket.emit('gemCollected', id);
     		}, null, self);
   		});
-	}//CREATE	
+	}//CREATE
 
 	update() {
  	if (this.player) {
@@ -100,7 +139,7 @@ class roomA extends Phaser.Scene {
     	} else {
      	 	this.player.setVelocityX(0);
     	}
-  
+
     	if (this.cursors.up.isDown){
       			this.player.setVelocityY(-100);
       			this.player.anims.play('up', true);
@@ -110,7 +149,7 @@ class roomA extends Phaser.Scene {
     		} else {
       			this.player.setVelocityY(0);
     		}
-  
+
     	this.physics.world.wrap(this.player, 5);
 
     // emit player movement

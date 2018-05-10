@@ -48,7 +48,9 @@ class roomA extends Phaser.Scene {
       			}
     		});
   		});
-  		this.anims.create({
+
+
+  	this.anims.create({
     		key: 'right',
     		frames: this.anims.generateFrameNumbers('player', { start: 143, end: 147 }),
     		frameRate: 10,
@@ -73,6 +75,10 @@ class roomA extends Phaser.Scene {
     		repeat: -1
 		});//Move Down
   		this.cursors = this.input.keyboard.createCursorKeys();
+
+
+
+
 
   		this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
   		this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
@@ -130,6 +136,7 @@ class roomA extends Phaser.Scene {
 
 	update() {
  	if (this.player) {
+
     	if (this.cursors.left.isDown) {
       		this.player.setVelocityX(-100);
       		this.player.anims.play('left', true);
@@ -150,6 +157,10 @@ class roomA extends Phaser.Scene {
       			this.player.setVelocityY(0);
     		}
 
+			if(!(this.cursors.left.isDown || this.cursors.right.isDown || this.cursors.up.isDown || this.cursors.down.isDown)) {
+				this.player.setFrame(130);
+			}
+
     	this.physics.world.wrap(this.player, 5);
 
     // emit player movement
@@ -167,12 +178,14 @@ class roomA extends Phaser.Scene {
   		}//if this player
 	}//UPDATE
 }
+
 function addPlayer(self, playerInfo) {
   		self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+}
 
-	}
 function addOtherPlayers(self, playerInfo) {
   		const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer');
+			otherPlayer.setFrame(130);
   		otherPlayer.setTint(0x0000ff);
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);

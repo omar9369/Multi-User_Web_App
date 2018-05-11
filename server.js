@@ -36,7 +36,8 @@ var boxes = [10];
 var scores = {
   blue: 0,
   red: 0,
-  yellow: 0
+  yellow: 0,
+  green: 0
 };
     //initialize gem locations
     for(i = 0; i < 10; i++) {
@@ -157,8 +158,10 @@ function startServer(req){
           scores.red += gems[gemId].points;
         } else if (players[socket.id].team === 'blue') {
           scores.blue += gems[gemId].points;
-        } else {
+        } else if (players[socket.id].team === 'yellow'){
           scores.yellow += gems[gemId].points;
+        }else{
+          scores.green += gems[gemId].points;
         }
         io.emit('scoreUpdate', scores);
     

@@ -93,12 +93,17 @@ class roomA extends Phaser.Scene {
 
   		this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
   		this.redScoreText = this.add.text(1200, 16, '', { fontSize: '32px', fill: '#FF0000' });
-      this.yellowScoreText = this.add.text(1200, 550, '', { fontSize: '32px', fill: '#FFFF00' });
+       		this.yellowScoreText = this.add.text(1200, 550, '', { fontSize: '32px', fill: '#FFFF00' });
+		this.greenScoreText = this.add.text(16, 550, '', { fontSize: '32px', fill: '#32CD32' });
 
   		this.socket.on('scoreUpdate', function (scores) {
     		self.blueScoreText.setText('Blue: ' + scores.blue);
+			
     		self.redScoreText.setText('Red: ' + scores.red);
-        self.yellowScoreText.setText('Yellow: ' + scores.yellow);
+		self.yellowScoreText.setText('Yellow: ' + scores.yellow);
+			
+		self.greenScoreText.setText('Green: ' + scores.green);
+
   		});
 
 			this.socket.on('boxLocations', function (boxArray) {
@@ -202,7 +207,7 @@ class roomA extends Phaser.Scene {
 
 function addPlayer(self, playerInfo) {
       var fill;
-      if (playerInfo.team === 'blue') { fill = '#0000FF';} else if (playerInfo.team === 'red') {fill = '#FF0000'} else {fill = '#FFFF00';}
+      if (playerInfo.team === 'blue') { fill = '#0000FF';} else if (playerInfo.team === 'red') {fill = '#FF0000';} else if(playerInfo.team === 'yellow'){fill = '#FFFF00'}else{fill = '#32CD32'}
   		self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
       self.player.setBounce(1);
 }
@@ -212,11 +217,13 @@ function addOtherPlayers(self, playerInfo) {
 			otherPlayer.setFrame(130);
 
   		if (playerInfo.team === 'blue') {
-      otherPlayer.setTint('#0000FF');
+			otherPlayer.setTint('#0000FF');
       } else if (playerInfo.team === 'red') {
-      otherPlayer.setTint('#FF0000');
+			otherPlayer.setTint('#FF0000');
+	  }else if (playerInfo.team === 'yellow') {
+			otherPlayer.setTint('#FFFF00');
       } else {
-        otherPlayer.setTint('#00FF00');
+        otherPlayer.setTint('##32CD32');
       }
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);

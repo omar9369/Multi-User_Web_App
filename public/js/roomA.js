@@ -53,8 +53,6 @@ class roomA extends Phaser.Scene {
     		});
   		});
   		this.socket.on('playerMoved', function (playerInfo) {
-        nameText = this.add.text(playerInfo.y, playerInfo.y, 'ssssssss', { font: '16px Courier', fill: '#00ff00' })
-        nameText.setText(playerInfo.playerName);
     		self.otherPlayers.getChildren().forEach(function (otherPlayer) {
       			if (playerInfo.playerId === otherPlayer.playerId) {
         			otherPlayer.setPosition(playerInfo.x, playerInfo.y);
@@ -218,7 +216,7 @@ function addOtherPlayers(self, playerInfo) {
       } else if (playerInfo.team === 'red') {
       otherPlayer.setTint('#FF0000');
       } else {
-        otherPlayer.setTint('#FFFF00');
+        otherPlayer.setTint('#00FF00');
       }
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);

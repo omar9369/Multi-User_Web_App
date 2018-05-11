@@ -102,6 +102,7 @@ app.get('/game', function(req, res){
     
       console.log('a user connected: ', socket.id);
       console.log(req.query.name+' '+req.query.color);
+      console.log(req.query.color);
       // create a new player and add it to our players object
       players[socket.id] = {
         rotation: 0,
@@ -109,8 +110,7 @@ app.get('/game', function(req, res){
         y: Math.floor(Math.random() * 500) + 50,
         playerId: socket.id,
         playerName: req.query.name,
-        playerName: req.query.color,
-        team: (Math.floor(Math.random() * 2) == 0) ? 'red' : 'blue'
+        team: req.query.color
       };
       // send the players object to the new player
       socket.emit('currentPlayers', players);

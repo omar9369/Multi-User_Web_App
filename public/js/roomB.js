@@ -181,7 +181,7 @@ class roomB extends Phaser.Scene {
 
 function addPlayer(self, playerInfo) {
       var fill;
-      if (playerInfo.team === 'blue') { fill = 0x0000ff;} else {fill = 0xff0000;}
+    if (playerInfo.team === 'blue') { fill = '#0000FF';} else if (playerInfo.team === 'red') {fill = '#FF0000';} else if(playerInfo.team === 'yellow'){fill = '#FFFF00'}else{fill = '#32CD32'}
   		self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
       self.text = self.add.text(16, 16, playerInfo.name, { fontSize: '32px', fill: fill });
       self.text.setText(playerInfo.name);
@@ -192,10 +192,15 @@ function addOtherPlayers(self, playerInfo) {
 			otherPlayer.setFrame(130);
 
   		if (playerInfo.team === 'blue') {
-      otherPlayer.setTint(0x0000ff);
-      } else {
-      otherPlayer.setTint(0xff0000);
-      }
+      otherPlayer.setTint(0xFFFF00);
+        } else if (playerInfo.team === 'red') {
+            otherPlayer.setTint(0xFF0000);
+        }else if (playerInfo.team === 'yellow') {
+            otherPlayer.setTint(0xFFFF00);
+        } else {
+            otherPlayer.setTint(0x32CD32);
+        }
+
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);
 	}

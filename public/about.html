@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About The Project</title>
+		<style type="text/css">
+		html {font-size: 62.5%}
+		body {font-size: 2rem;}
+		a {
+			text-decoration: none;
+			color: #3e3e3e;
+			font-weight: bold;
+		}
+		.linkSetupItem {
+			text-decoration: none;
+			color: #3e3e3e;
+			font-weight: bold;
+			padding: 0 2em;
+			float: center;
+		}
+		.infoHeader{text-align: center;}
+		#Amber{margin-top: 30px;}
+		#Nou {width: 100%;}
+		.center {text-align: center;}
+		.linkSetup {
+			text-align: center;
+			font-size: 2rem;
+		}
+		hr {margin: 0; padding: 0;}
+
+	</style>
+</head>
+<body>
+	<div class="linkSetup">
+		<a class="linkSetupItem" href="#Nou">Nou</a>
+		<a class="linkSetupItem" href="#Amber">Amber</a>
+		<a class="linkSetupItem" href="#Alex">Alex</a>
+		<a class="linkSetupItem" href="#Omar">Omar</a>
+		<a class="linkSetupItem" href="#projectInfo">Project</a>
+		<a class="linkSetupItem" href="index.ejs">Home</a>
+	</div>
+
+	<div id="Nou">
+		<div class="center"><img src="images/nou.png"> </div>
+		<h1>Chi Nou Vang</h1>
+		<p>An Information Systems Major at the University of St. Thomas, minoring in Sustainability. Enjoys art, videogames, and watching all types of shows. Likes to watch people succeed and tends not to think about himself too much, putting others before him often.</p>
+	</div><hr>
+	<div id="Amber"><div class="center"><img src="images/amber.jpg" height="350"> </div></div><hr>
+	<div id="Alex"></div><hr>
+	<div id="Omar"></div>
+	<div id="projectInfo">
+		<hr/>
+		<h3>Phaser V3</h3>
+		<p>Primarily used Phaser V3 to develope the game. As V3.0 came out recently, in February, coding limitations and documentations were limited. </p>
+
+		<h3>Express.js</h3>
+		<p>Express, is a web app framework that we used with Node.js to build this app. It's needed for the other modules.
+		Express allows for us to do GET/POST with web pages, thus allowing us to transfer to the ejs pages with query strings.</p>
+
+		<h4>Socket.io</h4>
+		<p>Allows for us to setup the socket for the server and also allows for us to emit and transfer data from the game to all players. So we would use this to get information of where the players/jewels/obstacles are and place them accordingly in other player's screen.</p>
+
+		<h3>BodyParser.js + Query-String</h3>
+		<p>BodyParser is a middleware for Express, it is used to handle HTTP POST requests. It gets the requests, with 'req', and then we can use it in our codes. We got the query-string from the html link and used it to display the username and their color while also using it to setup their team based on the color.</p>
+
+		<h3>PATH</h3>
+		<p>Allows for file and directory path usage. Sends the users to them. </p>
+
+		<h3>Validator</h3>
+		<p>With this module, we used Validation to check the input values are valid. We primarily used this module for Sanitization, in that we removed characters and such from the input data.</p>
+
+		<h3>HTTP/HTTPS</h3>
+		<p>Allows for us to setup the HTTP web server and client.</p>
+		<hr/>
+		<h1>Resources</h1>
+		<h3>Flip a Coin - by Cyber-Rainforce</h3>
+		<p>Use music from this composer, site found at <a href="http://cyber-rainforce.net/">http://cyber-rainforce.net/</a></p>
+
+		<h3>Kenny Animation</h3>
+		<p>Used resources from this site to build the game, site found at <a href="https://kenney.nl/assets">https://kenney.nl/assets</a></p>
+
+		<h3>Universal LPC Character</h3>
+		<p>Used resources to build the avatar, site found at <a href="http://gaurav.munjal.us/Universal-LPC-Spritesheet-Character-Generator/">http://gaurav.munjal.us/Universal-LPC-Spritesheet-Character-Generator/</a></p>
+
+
+
+	</div>
+</body>
+</html>

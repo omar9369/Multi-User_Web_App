@@ -35,12 +35,13 @@ var gems = [10];
 var boxes = [10];
 var scores = {
   blue: 0,
-  red: 0
+  red: 0,
+  yellow: 0
 };
     //initialize gem locations
     for(i = 0; i < 10; i++) {
       gems[i] = {
-        x: Math.floor(Math.random() * 700) + 50,
+        x: Math.floor(Math.random() * 1400) + 50,
         y: Math.floor(Math.random() * 500) + 50,
         points: Math.floor(Math.random() * 2) * 5 + 5
       };
@@ -49,7 +50,7 @@ var scores = {
     //initialize box locations
     for(i = 0; i < 10; i++) {
       boxes[i] = {
-        x: Math.floor(Math.random() * 700) + 50,
+        x: Math.floor(Math.random() * 1400) + 50,
         y: Math.floor(Math.random() * 500) + 50,
       };
     };
@@ -94,11 +95,21 @@ app.post('/game', (req, res) => {
 });//App.post END
 
 app.get('/game', function(req, res){
-        res.render('game', {});
-        playerName = req.query.name;
-        playerColor = req.query.color;
+renderGame(res).then(startServer(req));
+})//app.get end
 
-        io.on('connection', function (socket) {
+    
+function renderGame(res){
+  var myPromise = new Promise(function(resolve, reject){
+    resolve(res.render('game', {}));
+  });
+  return myPromise;
+}
+
+function startServer(req){
+  var myPromise = new Promise(function(resolve, reject){
+    resolve(
+            io.on('connection', function (socket) {
     
       console.log('a user connected: ', socket.id);
       console.log(req.query.name+' '+req.query.color);
@@ -106,7 +117,7 @@ app.get('/game', function(req, res){
       // create a new player and add it to our players object
       players[socket.id] = {
         rotation: 0,
-        x: Math.floor(Math.random() * 700) + 50,
+        x: Math.floor(Math.random() * 1400) + 50,
         y: Math.floor(Math.random() * 500) + 50,
         playerId: socket.id,
         playerName: req.query.name,
@@ -144,20 +155,25 @@ app.get('/game', function(req, res){
         io.emit('destroyGem', gemId);
         if (players[socket.id].team === 'red') {
           scores.red += gems[gemId].points;
-        } else {
+        } else if (players[socket.id].team === 'blue') {
           scores.blue += gems[gemId].points;
+        } else {
+          scores.yellow += gems[gemId].points;
         }
         io.emit('scoreUpdate', scores);
     
-        gems[gemId].x = Math.floor(Math.random() * 700) + 50;
+        gems[gemId].x = Math.floor(Math.random() * 1400) + 50;
         gems[gemId].y = Math.floor(Math.random() * 500) + 50;
         io.emit('gemLocation', gems[gemId], gemId);
       });
-    });
-})//app.get end
+    }
 
-    
-    
+      ));
+  });
+  return myPromise;
+}
+
+
     server.listen(8081, function () {
       console.log(`Listening on ${server.address().port}`);
     });

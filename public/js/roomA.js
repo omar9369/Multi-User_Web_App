@@ -1,10 +1,17 @@
+var textItem;
+var yourStats;
+var nameText;
 class roomA extends Phaser.Scene {
 
 	constructor() {
 		super({key:"roomA"});
 	}
 
-  	preload() {
+  	preload() { 
+
+    textItem = this.add.text(10, 50, 'Newest Player...', { font: '16px Courier', fill: '#00ff00' });
+    yourStats = this.add.text(500, 50, '', { font: '16px Courier', fill: '#00ff00' });
+     this.load.audio('cyrf','assets/cyrf_flip_a_coin.mp3', { stream: true });
   		this.load.spritesheet('player','assets/player.png',{
 			frameWidth: 64,
 			frameHeight: 64
@@ -23,9 +30,11 @@ class roomA extends Phaser.Scene {
   		this.socket = io();
   		this.otherPlayers = this.physics.add.group();
   		this.socket.on('currentPlayers', function (players) {
-    		Object.keys(players).forEach(function (id) {
-      			if (players[id].playerId === self.socket.id) {
+    		Object.keys(players).forEach(function (id) { 
+      			if (players[id].playerId === self.socket.id) { 
         			addPlayer(self, players[id]);
+              textItem.setText('You,'+players[id].playerName+', have joined the '+players[id].team+' team!');
+              yourStats.setText('Team: '+players[id].team);
       			} else {
         			addOtherPlayers(self, players[id]);
       			}
@@ -33,15 +42,19 @@ class roomA extends Phaser.Scene {
   		});
   		this.socket.on('newPlayer', function (playerInfo) {
     		addOtherPlayers(self, playerInfo);
+        textItem.setText(playerInfo.playerName+' has joined the '+playerInfo.team+' team!');
   		});
   		this.socket.on('disconnect', function (playerId) {
     		self.otherPlayers.getChildren().forEach(function (otherPlayer) {
       			if (playerId === otherPlayer.playerId) {
+              textItem.setText(playerId+' has left the game!');
         			otherPlayer.destroy();
       			}
     		});
   		});
   		this.socket.on('playerMoved', function (playerInfo) {
+        nameText = this.add.text(playerInfo.y, playerInfo.y, 'ssssssss', { font: '16px Courier', fill: '#00ff00' })
+        nameText.setText(playerInfo.playerName);
     		self.otherPlayers.getChildren().forEach(function (otherPlayer) {
       			if (playerInfo.playerId === otherPlayer.playerId) {
         			otherPlayer.setPosition(playerInfo.x, playerInfo.y);
@@ -81,11 +94,13 @@ class roomA extends Phaser.Scene {
 
 
   		this.blueScoreText = this.add.text(16, 16, '', { fontSize: '32px', fill: '#0000FF' });
-  		this.redScoreText = this.add.text(584, 16, '', { fontSize: '32px', fill: '#FF0000' });
+  		this.redScoreText = this.add.text(1200, 16, '', { fontSize: '32px', fill: '#FF0000' });
+      this.yellowScoreText = this.add.text(1200, 550, '', { fontSize: '32px', fill: '#FFFF00' });
 
   		this.socket.on('scoreUpdate', function (scores) {
     		self.blueScoreText.setText('Blue: ' + scores.blue);
     		self.redScoreText.setText('Red: ' + scores.red);
+        self.yellowScoreText.setText('Yellow: ' + scores.yellow);
   		});
 
 			this.socket.on('boxLocations', function (boxArray) {
@@ -96,6 +111,8 @@ class roomA extends Phaser.Scene {
 				}
 				self.physics.add.collider(self.player, boxes);
 			});
+
+
 
 			this.socket.on('gemLocations', function (gemArray) {
 				var gemType;
@@ -132,6 +149,12 @@ class roomA extends Phaser.Scene {
       			this.socket.emit('gemCollected', id);
     		}, null, self);
   		});
+
+    this.sound.pauseOnBlur = false;
+
+    this.music = this.sound.add('cyrf');
+
+    this.music.play();
 	}//CREATE
 
 	update() {
@@ -180,13 +203,23 @@ class roomA extends Phaser.Scene {
 }
 
 function addPlayer(self, playerInfo) {
+      var fill;
+      if (playerInfo.team === 'blue') { fill = '#0000FF';} else if (playerInfo.team === 'red') {fill = '#FF0000'} else {fill = '#FFFF00';}
   		self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'player');
+      self.player.setBounce(1);
 }
 
 function addOtherPlayers(self, playerInfo) {
   		const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer');
 			otherPlayer.setFrame(130);
-  		otherPlayer.setTint(0x0000ff);
+
+  		if (playerInfo.team === 'blue') {
+      otherPlayer.setTint('#0000FF');
+      } else if (playerInfo.team === 'red') {
+      otherPlayer.setTint('#FF0000');
+      } else {
+        otherPlayer.setTint('#FFFF00');
+      }
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);
 	}

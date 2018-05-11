@@ -24,7 +24,7 @@ class roomA extends Phaser.Scene {
   		this.otherPlayers = this.physics.add.group();
   		this.socket.on('currentPlayers', function (players) {
     		Object.keys(players).forEach(function (id) {
-      			if (players[id].playerId === self.socket.id) {
+      			if (players[id].playerId === self.socket.id) { 
         			addPlayer(self, players[id]);
       			} else {
         			addOtherPlayers(self, players[id]);
@@ -186,7 +186,12 @@ function addPlayer(self, playerInfo) {
 function addOtherPlayers(self, playerInfo) {
   		const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer');
 			otherPlayer.setFrame(130);
-  		otherPlayer.setTint(0x0000ff);
+
+  		if (playerInfo.team === 'blue') {
+      otherPlayer.setTint(0x0000ff);
+      } else {
+      otherPlayer.setTint(0xff0000);
+      }
   		otherPlayer.playerId = playerInfo.playerId;
   		self.otherPlayers.add(otherPlayer);
 	}

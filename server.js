@@ -6,6 +6,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var validator = require('express-validator');
 var querystring = require('querystring');
+var fs = require('fs');
 
 var playerName;
 var playerColor;
@@ -67,6 +68,22 @@ app.get('/', (req, res) => {
   res.render('index', {
       errors: undefined
   });//res.render end
+});
+
+app.get('/about', (req, res) => { 
+    fs.readFile('public/about.html', (err, data) => {
+        if (err) {
+            res.writeHead(404, {'Content-Type': 'text/plain'});
+            res.write('Uh oh - could not find file');
+            res.end();
+        }
+        else {
+
+            res.writeHead(200, {'Content-Type': 'text/html'});         
+            res.write(data);
+            res.end();
+        }
+    });
 });
     
 
@@ -173,7 +190,6 @@ function startServer(req){
   return myPromise;
 }
 
-
-    server.listen(8081, function () {
+    server.listen(8016, function () {
       console.log(`Listening on ${server.address().port}`);
     });
